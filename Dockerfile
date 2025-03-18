@@ -9,10 +9,13 @@ ENV LC_ALL C.UTF-8
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get upgrade --yes && apt-get autoremove --yes && \
-    apt-get install --no-install-recommends --yes apt-transport-https=* ca-certificates=* dumb-init=* jq=* gettext-base curl wget vim postgresql-client && \
+    apt-get install --no-install-recommends --yes apt-transport-https=* ca-certificates=* dumb-init=* jq=* gettext-base curl wget vim postgresql-client kubectl && \
     apt-get autoremove && apt-get clean -y && rm -rf /var/lib/apt/lists/* ~/.cache /tmp/* && rm -f /var/cache/apt/*.bin && \
     depName="$(awk -F= '/^ID=/{gsub(/"/, ""); print $2}' /etc/os-release)_$(awk -F= '/^VERSION_ID=/{gsub(/"/, ""); gsub(/\./,"_"); print$2}' /etc/os-release)" && \
-    dpkg-query -f 'datasource=repology depName='"${depName}"'/${binary:Package} versioning=loose version=${Version}\n' -W > /tmp/apt-list-base-${TARGETARCH}
+    dpkg-query -f 'datasource=repology depName='"${depName}"'/${binary:Package} versioning=loose version=${Version}\n' -W > /tmp/apt-list-base-${TARGETARCH} && \
+    echo "# Install Kubernetes" && \
+    curl --location --output /usr/local/bin/kubectl https://storage.googleapis.com/kubernetes-release/release/$KUBERNETES_VERSION/bin/linux/amd64/kubectl && \
+    chmod +x /usr/local/bin/kubectl
 
 RUN groupadd --system --gid 10000 doe && \
     useradd \
