@@ -10,9 +10,9 @@ ENV LC_ALL C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apt-get update && apt-get upgrade --yes && apt-get autoremove --yes && \
     apt-get install --no-install-recommends --yes apt-transport-https=* ca-certificates=* dumb-init=* jq=* gettext-base curl wget vim postgresql-client gnupg && \
-    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
+    curl -fsSL https://pkgs.k8s.io/core:/stable:/v1.32/deb/Release.key | gpg --dearmor -o /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
     chmod 644 /etc/apt/keyrings/kubernetes-apt-keyring.gpg && \
-    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | sudo tee /etc/apt/sources.list.d/kubernetes.list && \
+    echo 'deb [signed-by=/etc/apt/keyrings/kubernetes-apt-keyring.gpg] https://pkgs.k8s.io/core:/stable:/v1.32/deb/ /' | tee /etc/apt/sources.list.d/kubernetes.list && \
     chmod 644 /etc/apt/sources.list.d/kubernetes.list && \
     apt-get update && apt-get install -y kubectl && \
     apt-get autoremove && apt-get clean -y && rm -rf /var/lib/apt/lists/* ~/.cache /tmp/* && rm -f /var/cache/apt/*.bin && \
